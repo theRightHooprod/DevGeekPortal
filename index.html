@@ -120,6 +120,7 @@
 				let nextUrl = data.info.next;
 
 				if (nextUrl !== undefined && nextUrl !== null) {
+					//remove past events from the button.
 					nextButton.off('click');
 
 					nextButton.on('click', function () {
@@ -143,7 +144,7 @@
 			}, 500);
 		});
 
-		searchInput.on("input", function () {
+		searchInput.on("change keyup paste", function () {
 			let currentInputValue = searchInput.val().trim();
 
 			if (!currentInputValue) {
