@@ -112,7 +112,7 @@
 				let nextUrl = data.info.next;
 
 				if (nextUrl !== undefined && nextUrl !== null) {
-					characterContainer.off('click');
+					nextButton.off('click');
 
 					nextButton.on('click', function () {
 						loadCharacters(nextUrl);
