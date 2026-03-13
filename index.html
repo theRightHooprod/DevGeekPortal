@@ -57,105 +57,109 @@
 		integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
 
 	<script>
-		const searchInput = $('#search-character');
-		const characterContainer = $("#character-containers");
-		const apiURL = "https://rickandmortyapi.com/api/character"
-		const spinnerContainer = $('#spinner-container');
-		const nextButton = $('#nextButton');
-		const bodyContainer = $('#body-container');
+		$(document).ready(function () {
+			const searchInput = $('#search-character');
+			const characterContainer = $("#character-containers");
+			const apiURL = "https://rickandmortyapi.com/api/character"
+			const spinnerContainer = $('#spinner-container');
+			const nextButton = $('#nextButton');
+			const bodyContainer = $('#body-container');
 
-		function createCharacterCard(i, item) {
-			let columnContainer = $('<div></div>');
-			columnContainer.addClass('col');
+			function createCharacterCard(i, item) {
+				let columnContainer = $('<div></div>');
+				columnContainer.addClass('col');
 
-			// main card frame creation.
-			{
-				let cardContainer = $('<div></div>');
-				cardContainer.addClass('card');
-				cardContainer.css('width', '18rem');
-
-				let cardImage = $('<img>');
-
+				// main card frame creation.
 				{
-					cardImage.addClass('card-img-top');
-					cardImage.attr('loading', 'lazy');
-					cardImage.attr('src', item.image);
-				}
+					let cardContainer = $('<div></div>');
+					cardContainer.addClass('card');
+					cardContainer.css('width', '18rem');
 
-				let cardBody = $('<div></div>');
-				cardBody.addClass('card-body');
-
-				{
-					let cardTitle = $('<h5></h5>');
-					let cardSpecies = $('<p></p>');
+					let cardImage = $('<img>');
 
 					{
-						cardTitle.text(item.name);
-						cardTitle.addClass('card-title');
-						cardBody.append(cardTitle);
-
-						cardSpecies.text(`Species: ${item.species} Status: ${item.status}`);
-						cardSpecies.addClass('card-text');
-						cardBody.append(cardSpecies);
+						cardImage.addClass('card-img-top');
+						cardImage.attr('loading', 'lazy');
+						cardImage.attr('src', item.image);
 					}
 
+					let cardBody = $('<div></div>');
+					cardBody.addClass('card-body');
+
+					{
+						let cardTitle = $('<h5></h5>');
+						let cardSpecies = $('<p></p>');
+
+						{
+							cardTitle.text(item.name);
+							cardTitle.addClass('card-title');
+							cardBody.append(cardTitle);
+
+							cardSpecies.text(`Species: ${item.species} Status: ${item.status}`);
+							cardSpecies.addClass('card-text');
+							cardBody.append(cardSpecies);
+						}
+
+					}
+
+					cardContainer.append(cardImage);
+					cardContainer.append(cardBody);
+
+					columnContainer.append(cardContainer);
+
 				}
 
-				cardContainer.append(cardImage);
-				cardContainer.append(cardBody);
-
-				columnContainer.append(cardContainer);
-
+				characterContainer.append(columnContainer);
 			}
 
-			characterContainer.append(columnContainer);
-		}
-
-		function loadCharacters(url) {
-			$.getJSON(url).done(function (data) {
-				$.each(data.results, function (i, item) {
-					createCharacterCard(i, item);
-				});
-
-				let nextUrl = data.info.next;
-
-				if (nextUrl !== undefined && nextUrl !== null) {
-					//remove past events from the button.
-					nextButton.off('click');
-
-					nextButton.on('click', function () {
-						loadCharacters(nextUrl);
+			function loadCharacters(url) {
+				$.getJSON(url).done(function (data) {
+					$.each(data.results, function (i, item) {
+						createCharacterCard(i, item);
 					});
-					nextButton.show('slow');
-				}
-			})
-		}
 
+					let nextUrl = data.info.next;
 
-		$(document).on('ajaxStart', function () {
-			bodyContainer.toggle();
-			spinnerContainer.toggle();
-		});
+					if (nextUrl !== undefined && nextUrl !== null) {
+						//remove past events from the button.
+						nextButton.off('click');
 
-		$(document).on('ajaxSuccess', function () {
-			setTimeout(function () {
-				spinnerContainer.toggle();
-				bodyContainer.toggle();
-			}, 500);
-		});
-
-		searchInput.on("change keyup paste", function () {
-			let currentInputValue = searchInput.val().trim();
-
-			if (!currentInputValue) {
-				return;
+						nextButton.on('click', function () {
+							loadCharacters(nextUrl);
+						});
+						nextButton.show('slow');
+					}
+				})
 			}
 
-			characterContainer.empty();
-			nextButton.hide();
+
+			$(document).on('ajaxStart', function () {
+				bodyContainer.toggle();
+				spinnerContainer.toggle();
+			});
+
+			$(document).on('ajaxSuccess', function () {
+				setTimeout(function () {
+					spinnerContainer.toggle();
+					bodyContainer.toggle();
+				}, 500);
+			});
+
+			searchInput.on("change keyup paste", function () {
+				let currentInputValue = searchInput.val().trim();
+
+				if (!currentInputValue) {
+					nextButton.hide();
+					spinnerContainer.hide();
+					return;
+				}
+
+				characterContainer.empty();
+				nextButton.hide();
 
 
-			loadCharacters(apiURL + `?name=${currentInputValue}`);
+				loadCharacters(apiURL + `?name=${currentInputValue}`);
+			});
 		});
 	</script>
 </body>
