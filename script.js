@@ -1,10 +1,14 @@
 $(function() {
 	const searchInput = $('#search-character');
 	const characterContainer = $("#character-containers");
-	const apiURL = "https://rickandmortyapi.com/api/character"
 	const spinnerContainer = $('#spinner-container');
 	const nextButton = $('#nextButton');
 	const bodyContainer = $('#body-container');
+	const modal = $('#app-modal');
+	const modalContent = $('#modal-body');
+	const modalLabelTitle = $('#modal-label-title');
+
+	const apiURL = "https://rickandmortyapi.com/api/character"
 
 	function createCharacterCard(item) {
 		let columnContainer = $('<div></div>');
@@ -16,7 +20,7 @@ $(function() {
 			cardContainer.addClass('card');
 			cardContainer.css('width', '18rem');
 
-			let cardImage = $('<img>');
+			let cardImage = $('<img></img>');
 
 			{
 				cardImage.addClass('card-img-top');
@@ -42,6 +46,23 @@ $(function() {
 				}
 
 			}
+
+			cardContainer.on('click', function() {
+				modalContent.empty()
+
+				modalLabelTitle.text(item.name);
+
+				let characterImage = $('<img></img>');
+				{
+					characterImage.attr('loading', 'lazy');
+					characterImage.attr('src', item.image);
+				}
+
+				modalContent.append(characterImage);
+
+
+				modal.modal('toggle');
+			});
 
 			cardContainer.append(cardImage);
 			cardContainer.append(cardBody);
@@ -80,10 +101,14 @@ $(function() {
 	});
 
 	$(document).on('ajaxSuccess', function() {
-		setTimeout(function() {
-			spinnerContainer.toggle();
-			bodyContainer.toggle();
-		}, 5000);
+		// setTimeout(function() {
+		spinnerContainer.toggle();
+		bodyContainer.toggle();
+		// }, 1000);
+	});
+
+	$(document).on("ajaxError", function() {
+
 	});
 
 	searchInput.on("change keyup paste", function() {
