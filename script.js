@@ -7,6 +7,7 @@ $(function() {
 	const modal = $('#app-modal');
 	const modalContent = $('#modal-body');
 	const modalLabelTitle = $('#modal-label-title');
+	const customToast = $('#custom-toast');
 
 	const apiURL = "https://rickandmortyapi.com/api/character"
 
@@ -108,7 +109,7 @@ $(function() {
 	});
 
 	$(document).on("ajaxError", function() {
-
+		customToast.toast('show');
 	});
 
 	searchInput.on("change keyup paste", function() {
