@@ -11,6 +11,17 @@ $(function() {
 
 	const apiURL = "https://rickandmortyapi.com/api/character"
 
+	let timeoutId = null;
+
+	function debounce(func, delay) {
+		return function(...args) {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(() => {
+				func.apply(this, args);
+			}, delay);
+		};
+	}
+
 	function createCharacterCard(item) {
 		let columnContainer = $('<div></div>');
 		columnContainer.addClass('col');
@@ -103,42 +114,41 @@ $(function() {
 				nextButton.on('click', function() {
 					loadCharacters(nextUrl);
 				});
-				nextButton.show('slow');
+				nextButton.show();
 			}
 		})
 	}
 
 
 	$(document).on('ajaxStart', function() {
-		bodyContainer.toggle();
-		spinnerContainer.toggle();
+		bodyContainer.hide();
+		spinnerContainer.show();
 	});
 
 	$(document).on('ajaxSuccess', function() {
-		// setTimeout(function() {
-		spinnerContainer.toggle();
-		bodyContainer.toggle();
-		// }, 1000);
+
+		setTimeout(function() {
+			bodyContainer.show();
+		}, 500);
+
+		setTimeout(function() {
+			spinnerContainer.hide();
+		}, 500);
 	});
 
 	$(document).on("ajaxError", function() {
 		customToast.toast('show');
 	});
 
-	searchInput.on("change keyup paste", function() {
-		let currentInputValue = searchInput.val().trim();
+	searchInput.on("change keyup paste", debounce(function() {
+		if (searchInput.val()) {
+			let currentInputValue = searchInput.val().trim();
 
-		if (!currentInputValue) {
+			characterContainer.empty();
 			nextButton.hide();
-			spinnerContainer.hide();
-			return;
+
+			loadCharacters(apiURL + `?name=${currentInputValue}`);
 		}
-
-		characterContainer.empty();
-		nextButton.hide();
-
-
-		loadCharacters(apiURL + `?name=${currentInputValue}`);
-	});
+	}, 250));
 });
 
