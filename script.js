@@ -59,7 +59,20 @@ $(function() {
 					characterImage.attr('src', item.image);
 				}
 
-				modalContent.append(characterImage);
+				let statusPara = $('<p></p>');
+
+				{
+					statusPara.text(`Current status: ${item.status}`);
+				}
+
+				let speciesPara = $('<p></p>');
+
+				{
+					speciesPara.addClass("mt-3");
+					speciesPara.text(`Species: ${item.species}`);
+				}
+
+				modalContent.append(characterImage, speciesPara, statusPara);
 
 
 				modal.modal('toggle');
