@@ -150,5 +150,7 @@ $(function() {
 			loadCharacters(apiURL + `?name=${currentInputValue}`);
 		}
 	}, 250));
+
+	loadCharacters(apiURL);
 });
 
